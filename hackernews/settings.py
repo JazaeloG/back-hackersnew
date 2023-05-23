@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'h7wcgpltd9jxm*()265@ux7$z0lp#!%w9cr6^r^v%^21&g^e+o'
+SECRET_KEY = 'z-vlk87isg@d&^i^wgy$uls5c!gwusx*39wscjv*%06aptmkdr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'graphene_django',
     'links',
+    'users',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,15 +83,19 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'hackernews',
         'USER': 'postgres',
-        'PASSWORD': '261003',
-        'HOST': 'localhost',
-        'PORT': 5432,
-   }
+        'PASSWORD' : '261003',
+        'HOST' : 'localhost',
+        'PORT' : '5432',
+    }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,5 +133,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GRAPHENE = {
+    'SCHEMA': 'mysite.myschema.schema',
     'SCHEMA': 'hackernews.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
